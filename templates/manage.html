@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Manage Polls
+</h1><a href="{{ url_for('home') }}"><span class="badge bg-secondary">Back to Home</span></a>
+<hr>
+<h1>All Polls ({{ polls|length }})</h1>
+<hr>
+{% for poll in polls %}
+{% set li = le(poll.votes) %}
+{% set tot = li|sum %}
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title"><a href="{{ url_for('poll', id=poll.id) }}" target="_blank">{{ poll.question }} — {{
+                url_for('poll', id=poll.id) }}</a></h5>
+        <h6 class="card-subtitle mb-2 link-secondary">{{ le(poll.votes)|sum
+            }} votes
+        </h6>
+        <ul>
+            {% for option in poll.options.split('||') %}
+            <li>{{ option }} — {{li[loop.index - 1]}} votes ({% if li[loop.index - 1] != 0 %}{{
+                100 / (tot /
+                li[loop.index - 1])
+                }}{% else %}0{% endif
+                %}%)</li>
+            {% endfor %}
+        </ul>
+        <p>Multiple submissions by one browser {% if not poll.multiplesubs %}not{% endif %} allowed</p>
+        <p>ID: {{ poll.id }}</p>
+        <p>Unique ID: {{ poll.unique_id }}</p>
+        <a href="{{ url_for('delete_poll', id=poll.id) }}" class="btn btn-danger btn-sm m-1">Delete</a>
+    </div>
+</div><br>
+{% endfor %}
+{% endblock %}

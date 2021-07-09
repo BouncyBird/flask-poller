@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{ poll.question }}</h1>
+<hr>
+{% set li = le(poll.votes) %}
+{% set tot = li|sum %}
+<form action="/poll/{{ id }}/vote" enctype="multipart/form-data" method="POST">
+    {% for option in poll.options.split("||") %}
+    <input type="radio" id="{{ loop.index - 1 }}" name="vote" value="{{ option }}" required>
+    <label for="{{ loop.index - 1 }}">{{ option }} — {{li[loop.index - 1]}} votes ({% if li[loop.index - 1] != 0 %}{{
+        100 / (tot /
+        li[loop.index - 1])
+        }}{% else %}0{% endif
+        %}%)</label><br>
+    {% endfor %}
+    <br>
+    <div class="d-grid gap-2">
+        <input type="submit" value="Vote" class="btn btn-outline-info" id="submit">
+    </div>
+</form>
+{% endblock content %}
